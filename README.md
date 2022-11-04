@@ -29,7 +29,7 @@
 1. Enter a course name (press enter to apply)
     - ***Please note currently the input has to be specific to the course title from the csv file:***
     - ***other inputs will cause an error to appear***
-    - Some Examples of valid inputs:
+    - Some Examples of valid inputs (refer to csv for more inputs):
        - Ultimate Investment Banking Course
        - Black Algo Trading: Build Your Trading Robot
        - Excel functions to analyze and visualize data
