@@ -2,7 +2,7 @@
 
 > A recommendation system that provides udemy courses based on user input
 
-> Live demo [_here_](https://drive.google.com/file/d/1uCt-IB1r_5wuRzKycpLvNKY8y-H3cKNo/view?usp=share_link).
+> Live demo [_here_](https://drive.google.com/file/d/1f8J7du_kMKnd7VyjNMZFIWNVIIQ_Yqrh/view?usp=sharing).
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -29,6 +29,7 @@
 1. Enter a course name (press enter to apply)
     - ***Please note currently the input has to be specific to the course title from the csv file:***
     - ***other inputs will cause an error to appear***
+    - ***Please note that componenets apart from the input text box such as Cost range, selection of subjects etc are not functional as of now. These functionalities will be made available during the submission of the second deliverables.***
     - Some Examples of valid inputs (refer to csv for more inputs):
        - Ultimate Investment Banking Course
        - Black Algo Trading: Build Your Trading Robot
