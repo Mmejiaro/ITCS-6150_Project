@@ -17,7 +17,6 @@
 
 
 ## Setup
-Proceed to describe how to install / setup one's local environment / get started with the project.
 - With the files in your preferred directory open in your perferred IDE (running through Anacanda ensures that most dependenices are already downloaded)
 - Ensure you have python3 (created using version installed 3.9.12)
 - Streamlit (version 1.13.0) opensource framework was used
@@ -27,7 +26,6 @@ Proceed to describe how to install / setup one's local environment / get started
 
 
 ## Usage
-How does one go about using it?
 1. Enter a course name (press enter to apply)
     - Please note currently the input has to be specific to the course title:
     - Some Examples of valid inputs:
