@@ -27,7 +27,7 @@
 
 ## Usage
 1. Enter a course name (press enter to apply)
-    - ***Please note currently the input has to be specific to the course title:***
+    - ***Please note currently the input has to be specific to the course title from the csv file:***
     - Some Examples of valid inputs:
        - Ultimate Investment Banking Course
        - Black Algo Trading: Build Your Trading Robot
