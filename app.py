@@ -7,8 +7,6 @@ import seaborn as sns
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-tab1, tab2 = st.tabs(["Main", "Data Info"])
-
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
@@ -21,7 +19,7 @@ def initialize_pandasDf():
     input_df = load_data_from_source()
     return input_df
 
-with tab1:
+def page1():
     st.header("Course Recommendation")
 
     def user_input():
@@ -77,7 +75,7 @@ with tab1:
         recommended_course_listing = recommend_courses(user_info['user_input_text'], ingress_df, sim_matrix)
         display_output(recommended_course_listing)
 
-with tab2:
+def page2():
     st.header('Data Visualization')
 
     def sortedCourses(subject, base):
@@ -145,4 +143,10 @@ with tab2:
         cp.bar_label(cp.containers[1])
         st.pyplot(fig)
         
+page_names = {
+    "Main": page1,
+    "Data Info": page2, 
+}
 
+page_selected = st.sidebar.selectbox("Select page", page_names.keys())
+page_names[page_selected]()
