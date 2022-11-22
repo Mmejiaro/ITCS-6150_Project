@@ -57,5 +57,5 @@ To do:
 
 
 ## Contact
-Created by Shreyas Lokesha, Claire Ardern, Rudhramoorthy Baskar, and Michael Mejia
+Created by Shreyas Lokesha, Claire Ardern, Rudhra Moorthy Baskar, and Michael Mejia
 
