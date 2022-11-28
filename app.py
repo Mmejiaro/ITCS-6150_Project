@@ -17,6 +17,16 @@ global global_data
 global_data = pd.DataFrame(columns=global_col_list)
 global user_text
 user_text = ""
+test = []
+
+if 'global' not in st.session_state:
+    st.session_state['global'] = global_data = pd.DataFrame(columns=global_col_list)
+if 'rep_data' not in st.session_state:
+    st.session_state['rep_data'] = rep_data = pd.DataFrame(columns=global_col_list)
+
+if 'user_input' not in st.session_state:
+    st.session_state['user_input'] = user_text = ""
+
 
 def load_data_from_source():
     data_read = pd.read_csv('udemy_courses.csv')
@@ -38,7 +48,6 @@ def page1():
         if cost_input == "Pay" or cost_input == "Both":
             disable = False
 
-        # TODO: replace max_value with correct value
         max_input = st.slider("Pick your cost range",
                     min_value=0.0, max_value=250.00, step=10.00, disabled=disable)
 
@@ -85,13 +94,19 @@ def page1():
         st.dataframe(data=rlist.loc[:,rlist.columns != 'course_title_cleaned'])
 
     user_info = user_input()
+    
     if user_info:
         ingress_df = initialize_pandasDf()
         (bm25M, corp) = implementBM25(ingress_df)
         recommended_raw_course_listing = recommend_courses(user_info['user_input_text'], ingress_df, corp, bm25M)
         recom_list = additionalContentFiltering(user_info['cost'], user_info['max_range'],recommended_raw_course_listing)
+        
         rep_data = recom_list.copy(deep=True)
+        st.session_state['rep_data'] = st.session_state['rep_data'].append(rep_data)
+
         user_text = user_info['user_input_text']
+        #st.session_state['user_input'] = st.session_state['user_input'] + " " + user_text
+
         display_output(recom_list)
 
 def page2():
@@ -165,16 +180,16 @@ def page2():
 def page3():
     st.header('Static User Dashboard')
 
+    x=st.write(st.session_state['rep_data'])
+    y=st.write(st.session_state['user_input'])
+
     def savedRecoms(f_rep_data, f_user_text):
-        f_rep_data['keyword_used_in_search'] = f_user_text
+        #f_rep_data['keyword_used_in_search'] = f_user_text
         global global_data
-        global_data = global_data.append(rep_data)
-        if(global_data.empty):
-            st.write("User recommendation data is yet to be tracked")
-        else:
-            st.dataframe(data=global_data)
+        global_data = st.session_state['global'] = st.session_state['global'].append(f_rep_data)
+
     
-    savedRecoms(rep_data, user_text)
+    savedRecoms(x, y)
 
 page_names = {
     "Main": page1,
