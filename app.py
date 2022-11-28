@@ -4,11 +4,19 @@ import matplotlib.pyplot as plt
 import pycaret as pyc
 import neattext.functions as ntt
 import seaborn as sns
+from rank_bm25 import BM25Okapi
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+global_col_list = ['course_id','course_title','url','is_paid','price','num_subscribers','num_reviews','num_lectures','level','content_duration','published_timestamp','subject']
+rep_data = pd.DataFrame(columns=global_col_list)
+global global_data
+global_data = pd.DataFrame(columns=global_col_list)
+global user_text
+user_text = ""
 
 def load_data_from_source():
     data_read = pd.read_csv('udemy_courses.csv')
@@ -32,48 +40,59 @@ def page1():
 
         # TODO: replace max_value with correct value
         max_input = st.slider("Pick your cost range",
-                    min_value=0.0, max_value=100.00, step=0.25, disabled=disable)
+                    min_value=0.0, max_value=250.00, step=10.00, disabled=disable)
 
-        subject_input = st.multiselect('Subjects', [
-            'Business Finance', 'Graphic Design', 'Musical Instruments', 'Web Development'])
+        # subject_input = st.multiselect('Subjects', [
+        #     'Business Finance', 'Graphic Design', 'Musical Instruments', 'Web Development'])
 
-        level_input = st.multiselect(
-            'Level', ['All Levels', 'Expert', 'Intermediate', 'Beginner'])
+        # level_input = st.multiselect(
+        #     'Level', ['All Levels', 'Expert', 'Intermediate', 'Beginner'])
 
-        if text_input != "" and len(subject_input) != 0 and len(level_input) != 0:
+        if text_input != "" :
             return dict(user_input_text=text_input, cost=cost_input,
-                        max_range=max_input, subjects=subject_input, level=level_input)
+                        max_range=max_input)
 
-    def implement_cosine_sim(inDataFrame):
+    def implementBM25(inDataFrame):
         inDataFrame['course_title_cleaned'] = inDataFrame['course_title'].apply(ntt.remove_stopwords)
         inDataFrame['course_title_cleaned'] = inDataFrame['course_title_cleaned'].apply(ntt.remove_special_characters)
         inDataFrame['course_title_cleaned'] = inDataFrame['course_title_cleaned'].str.lower()
-        cvect = CountVectorizer()
-        cv_mat = cvect.fit_transform(inDataFrame['course_title_cleaned'])
-        cos_sim_matrix = cosine_similarity(cv_mat, cv_mat)
-        return cos_sim_matrix
+        actualCorpus = inDataFrame['course_title_cleaned'].to_list()
+        tokenizedCorpCont = [content.split(" ") for content in actualCorpus]
+        bm25matrix = BM25Okapi(tokenizedCorpCont)
+        return bm25matrix, actualCorpus
 
-    def recommend_courses(userText, inDataFrame, sim):
-        course_ind = pd.Series(inDataFrame.index, index=inDataFrame['course_title'])
-        crse_idx = course_ind[userText]
-        simscores = list(enumerate(sim[crse_idx]))
-        sortedscores = sorted(simscores,key=lambda x:x[1], reverse=True)
-        relevantrecom = sortedscores[1:21]
-        recomList = []
-        for index, sc in relevantrecom:
-            recomList.append(inDataFrame.loc[index,["course_title","url","level","price","num_lectures","subject"]])
-        
-        return recomList
+    def recommend_courses(userText, inDataFrame,f_actualCorpus, f_bm25matrix):
+        userText = userText.lower()
+        tokenized_text = userText.split(" ")
+        return_list = f_bm25matrix.get_top_n(tokenized_text, f_actualCorpus, n = 100)
+        course_ind = pd.Series(inDataFrame.index, index=inDataFrame['course_title_cleaned'])
+        df_col_list = ['course_id','course_title','url','is_paid','price','num_subscribers','num_reviews','num_lectures','level','content_duration','published_timestamp','subject']
+        proc_df = pd.DataFrame(columns=df_col_list)
+        crse_idx = [course_ind[item] for item in return_list]
+        for idx in crse_idx:
+            proc_df = proc_df.append(inDataFrame.loc[idx],ignore_index=True)
+        return proc_df
+
+    def additionalContentFiltering(cost_Ip, max_Ip, bmRes):
+        bmRes = bmRes.drop(bmRes[bmRes.price > max_Ip].index)
+        if(cost_Ip == 'Free'):
+            bmRes = bmRes.drop(bmRes[bmRes.is_paid == 'TRUE'].index)
+        elif(cost_Ip == 'Pay'):
+            bmRes = bmRes.drop(bmRes[bmRes.is_paid == 'FALSE'].index)
+        return bmRes
 
     def display_output(rlist):
-        st.table(rlist)
+        st.dataframe(data=rlist.loc[:,rlist.columns != 'course_title_cleaned'])
 
     user_info = user_input()
     if user_info:
         ingress_df = initialize_pandasDf()
-        sim_matrix = implement_cosine_sim(ingress_df)
-        recommended_course_listing = recommend_courses(user_info['user_input_text'], ingress_df, sim_matrix)
-        display_output(recommended_course_listing)
+        (bm25M, corp) = implementBM25(ingress_df)
+        recommended_raw_course_listing = recommend_courses(user_info['user_input_text'], ingress_df, corp, bm25M)
+        recom_list = additionalContentFiltering(user_info['cost'], user_info['max_range'],recommended_raw_course_listing)
+        rep_data = recom_list.copy(deep=True)
+        user_text = user_info['user_input_text']
+        display_output(recom_list)
 
 def page2():
     st.header('Data Visualization')
@@ -142,10 +161,25 @@ def page2():
         cp.bar_label(cp.containers[0])
         cp.bar_label(cp.containers[1])
         st.pyplot(fig)
-        
+
+def page3():
+    st.header('Static User Dashboard')
+
+    def savedRecoms(f_rep_data, f_user_text):
+        f_rep_data['keyword_used_in_search'] = f_user_text
+        global global_data
+        global_data = global_data.append(rep_data)
+        if(global_data.empty):
+            st.write("User recommendation data is yet to be tracked")
+        else:
+            st.dataframe(data=global_data)
+    
+    savedRecoms(rep_data, user_text)
+
 page_names = {
     "Main": page1,
-    "Data Info": page2, 
+    "Data Info": page2,
+    "Static Dashboard": page3
 }
 
 page_selected = st.sidebar.selectbox("Select page", page_names.keys())
