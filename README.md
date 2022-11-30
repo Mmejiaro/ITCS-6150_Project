@@ -20,6 +20,7 @@
 - With the files in your preferred directory open in your perferred IDE (running through Anacanda ensures that most dependenices are already downloaded)
 - Ensure you have python3 (created using version installed 3.7.15)
 - Streamlit (version 1.13.0) opensource framework was used
+- other libraries used - neattext, rank_bm25, pycaret
 - in the terminal ensure that you are in the correct directory that contains app.py
 - to run project: streamlit run app.py
 - will automatically open a browser page displaying the application or click on the provide links that appear in terminal
