@@ -26,34 +26,23 @@
 
 
 ## Usage
-1. Enter a course name (press enter to apply)
-    - ***Please note currently the input has to be specific to the course title from the csv file:***
-    - ***other inputs will cause an error to appear***
-    - ***Please note that componenets apart from the input text box such as Cost range, selection of subjects etc are not functional as of now. These functionalities will be made available during the submission of the second deliverables.***
-    - Some Examples of valid inputs (refer to csv for more inputs):
-       - Ultimate Investment Banking Course
-       - Black Algo Trading: Build Your Trading Robot
-       - Excel functions to analyze and visualize data
-       - Guitar Lessons - Blind Blake - King Of Ragtime Blues Guitar
-       - Mastering JavaScript
-       - Photoshop Tools 101
-       - Django For Beginners
-2. Select cost either Pay, Free, Both (selecting Free disable range picker)
-3. Pick the maximum value that the user is willing to pay
-4. Select the subject(s) of interest
-5. Select level(s) of interest
-6. The recommended courses will appear at the bottom
+1. Sidebar on left, can select a page, Defaulted to Main
+- Main Page
+    1. Enter a course name (press enter to apply)
+    2. Select cost either Pay, Free, Both (selecting Free disable range picker)
+    3. Pick the maximum value that the user is willing to pay
+    5. The recommended courses will appear at the bottom
+- Data Info Page
+    1. Choose a question from the following four provided
+    2. Graphical representation / table of that data will appear at bottom based on selected question
+- Static Dashboard
+    1. Dependent on Main Page, Stores courses in a table based on pervious searches
+    2. By default dashboard is empty with no information was inputed in Main Page
+    3. Can view all courses that were searched on main page during the specific session
 
 
 ## Project Status
-Project is: _in progress_
-
-
-To do:
-- Improve upon user input
-- Improve UI design for a more user-friendly approach
-- Dashboard for user to keep track of the suggested returns
-- Visual representation of data set
+Project is: _complete_
 
 
 ## Contact
