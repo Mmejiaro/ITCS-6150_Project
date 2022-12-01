@@ -2,7 +2,7 @@
 
 > A recommendation system that provides udemy courses based on user input
 
-> Live demo [_here_](https://drive.google.com/file/d/1f8J7du_kMKnd7VyjNMZFIWNVIIQ_Yqrh/view?usp=sharing).
+> Live demo [_here_](https://drive.google.com/file/d/1k-cHfWjZRipmPHbiZjCqUjmk1DgIkJxV/view?usp=sharing).
 
 ## Table of Contents
 * [General Info](#general-information)
